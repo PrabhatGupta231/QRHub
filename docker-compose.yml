@@ -1,0 +1,64 @@
+services:
+  # PHP Application (Laravel FPM container)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qrhub-app
+    container_name: qrhub-app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - qrhub-network
+
+  # Web Server (Nginx container)
+  web:
+    image: nginx:alpine
+    container_name: qrhub-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www
+      - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - qrhub-network
+
+  # Database Server (MySQL container)
+  db:
+    image: mysql:8.0
+    container_name: qrhub-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-qrhub}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
+      MYSQL_USER: ${DB_USERNAME:-qrhub_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-qrhub_pass}
+    volumes:
+      - qrhub-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qrhub-network
+
+networks:
+  qrhub-network:
+    driver: bridge
+
+volumes:
+  qrhub-db-data:
+    driver: local
