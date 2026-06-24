@@ -15,6 +15,18 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
+// Health Check (for Render, Railway, load balancers)
+// ==========================================
+Route::get('/health', function () {
+    return response()->json([
+        'status'  => 'ok',
+        'service' => 'QRHub',
+        'env'     => app()->environment(),
+        'time'    => now()->toIso8601String(),
+    ], 200);
+})->name('health');
+
+// ==========================================
 // Frontend Routes
 // ==========================================
 Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -13,12 +13,18 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        $email    = env('ADMIN_EMAIL', 'admin@qrhub.com');
+        $password = env('ADMIN_PASSWORD', 'ChangeMe123!');
+
         User::updateOrCreate(
-            ['email' => 'admin@qrhub.com'],
+            ['email' => $email],
             [
-                'name' => 'QRHub Admin',
-                'password' => Hash::make('admin123'),
+                'name'     => 'QRHub Admin',
+                'password' => Hash::make($password),
             ]
         );
+
+        $this->command->info("Admin user seeded: {$email}");
     }
 }
+

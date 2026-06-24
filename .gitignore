@@ -25,3 +25,24 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# SQLite databases (never commit database files)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+database/*.sqlite
+database/*.sqlite-shm
+database/*.sqlite-wal
+
+# PHPUnit cache
+.phpunit.result.cache
+.phpunit.cache/
+
+# Deployment generated files (built artifacts)
+/bootstrap/cache/config.php
+/bootstrap/cache/routes*.php
+/bootstrap/cache/views.php
+/bootstrap/cache/events.php
+/bootstrap/cache/packages.php
+/bootstrap/cache/services.php
+
