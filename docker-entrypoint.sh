@@ -17,41 +17,12 @@ mkdir -p /var/www/storage/logs \
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# ============================================================
-# Wait for MySQL using PHP (mysqladmin not available in FPM image)
-# ============================================================
-echo "Waiting for database connection..."
-until php -r "
-    \$retries = 0;
-    while (\$retries < 30) {
-        try {
-            \$pdo = new PDO(
-                'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: 3306),
-                getenv('DB_USERNAME'),
-                getenv('DB_PASSWORD'),
-                [PDO::ATTR_TIMEOUT => 3]
-            );
-            echo 'Connected.' . PHP_EOL;
-            exit(0);
-        } catch (Exception \$e) {
-            echo 'Database unavailable, retrying...' . PHP_EOL;
-            sleep(2);
-            \$retries++;
-        }
-    }
-    exit(1);
-"; do
-    echo "PHP DB check failed, retrying in 3s..."
-    sleep 3
-done
-
-echo "Database is ready!"
 
 # ============================================================
 # Run Migrations (safe — skips already-run migrations)
 # ============================================================
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate --force || true
 
 # ============================================================
 # Seed on FIRST SETUP only
