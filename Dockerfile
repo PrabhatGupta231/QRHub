@@ -21,7 +21,7 @@ RUN npm run build
 # ============================================================
 # Stage 2: PHP 8.3 FPM — Production Laravel runtime
 # ============================================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
 
 # Install system dependencies
 RUN apk add --no-cache \
