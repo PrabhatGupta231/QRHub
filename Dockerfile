@@ -38,8 +38,9 @@ RUN apk add --no-cache \
     imagemagick \
     imagemagick-dev \
     icu-dev \
-    mysql-client
-
+    mysql-client \
+    postgresql-dev
+    
 # Install PHP extensions
 RUN docker-php-ext-configure gd \
         --with-freetype \
