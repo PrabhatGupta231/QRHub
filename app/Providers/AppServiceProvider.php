@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,11 +24,16 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        Schema::defaultStringLength(191);
+{
+    Schema::defaultStringLength(191);
 
-        RateLimiter::for('qr-generator', function (Request $request) {
-            return Limit::perMinute(60)->by($request->ip());
-        });
+    if (app()->environment('production')) {
+        URL::forceScheme('https');
     }
+
+    RateLimiter::for('qr-generator', function (Request $request) {
+        return Limit::perMinute(60)->by($request->ip());
+    });
+}
+    
 }
