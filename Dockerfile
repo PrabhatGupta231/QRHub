@@ -47,6 +47,8 @@ RUN docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
+        pgsql \
         gd \
         zip \
         mbstring \
